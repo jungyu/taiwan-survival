@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣戰時避難地圖 - 離線版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .region-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .region-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .region-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+        }
+
+        .region-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .region-details {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #007bff;
+        }
+
+        .region-details.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shelter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .shelter-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .shelter-type {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .shelter-name {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .shelter-address {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .shelter-capacity {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .route-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .route-title {
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .route-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .route-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .route-list li:last-child {
+            border-bottom: none;
+        }
+
+        .emergency-contacts {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .emergency-title {
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .contact-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .contact-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #d63031;
+        }
+
+        .contact-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .print-button {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 20px auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .print-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media print {
+            body { background: white; }
+            .print-button { display: none; }
+            .region-card { background: #f0f0f0 !important; color: black !important; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .subtitle { font-size: 1em; }
+            .main-content { padding: 15px; }
+            .region-selector { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ 台灣戰時避難地圖</h1>
+            <div class="subtitle">緊急避難所與疏散路線指南</div>
+        </div>
+
+        <div class="main-content">
+            <div class="region-selector">
+                <div class="region-card" onclick="showRegion('north')">
+                    <h3>🏙️ 北部地區</h3>
+                    <p>台北、新北、桃園、基隆、新竹</p>
+                </div>
+                <div class="region-card" onclick="showRegion('central')">
+                    <h3>🏞️ 中部地區</h3>
+                    <p>台中、彰化、南投、雲林、苗栗</p>
+                </div>
+                <div class="region-card" onclick="showRegion('south')">
+                    <h3>🌴 南部地區</h3>
+                    <p>高雄、台南、嘉義、屏東</p>
+                </div>
+                <div class="region-card" onclick="showRegion('east')">
+                    <h3>⛰️ 東部地區</h3>
+                    <p>宜蘭、花蓮、台東</p>
+                </div>
+                <div class="region-card" onclick="showRegion('islands')">
+                    <h3>🏝️ 離島地區</h3>
+                    <p>澎湖、金門、馬祖、蘭嶼、綠島</p>
+                </div>
+            </div>
+
+            <!-- 北部地區詳細資訊 -->
+            <div id="north" class="region-details">
+                <h2>🏙️ 北部地區避難指南</h2>
+                <div class="shelter-grid">
+                    <div class="shelter-item">
+                        <div class="shelter-type">政府指定避難所</div>
+                        <div class="shelter-name">台北市政府大樓</div>
+                        <div class="shelter-address">台北市信義區市府路1號</div>
+                        <div class="shelter-capacity">容納人數：約3000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">大型體育館</div>
+                        <div class="shelter-name">台北小巨蛋</div>
+                        <div class="shelter-address">台北市松山區南京東路四段2號</div>
+                        <div class="shelter-capacity">容納人數：約15000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">地下避難空間</div>
+                        <div class="shelter-name">捷運車站地下空間</div>
+                        <div class="shelter-address">台北捷運各大車站</div>
+                        <div class="shelter-capacity">容納人數：依車站規模而定</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">學校避難所</div>
+                        <div class="shelter-name">台灣大學體育館</div>
+                        <div class="shelter-address">台北市大安區羅斯福路四段1號</div>
+                        <div class="shelter-capacity">容納人數：約2000人</div>
+                    </div>
+                </div>
+
+                <div class="route-info">
+                    <div class="route-title">🛣️ 主要疏散路線</div>
+                    <ul class="route-list">
+                        <li><strong>往南路線：</strong>國道1號 → 台中 → 高雄</li>
+                        <li><strong>往東路線：</strong>國道5號 → 宜蘭 → 花蓮</li>
+                        <li><strong>往西路線：</strong>台61線西濱公路 → 新竹 → 台中</li>
+                        <li><strong>山區路線：</strong>台7線 → 桃園復興 → 山區避難</li>
+                        <li><strong>緊急海路：</strong>基隆港 → 金門、馬祖</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 中部地區詳細資訊 -->
+            <div id="central" class="region-details">
+                <h2>🏞️ 中部地區避難指南</h2>
+                <div class="shelter-grid">
+                    <div class="shelter-item">
+                        <div class="shelter-type">政府避難所</div>
+                        <div class="shelter-name">台中市政府新市政大樓</div>
+                        <div class="shelter-address">台中市西屯區台灣大道三段99號</div>
+                        <div class="shelter-capacity">容納人數：約2500人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">大型場館</div>
+                        <div class="shelter-name">台中洲際棒球場</div>
+                        <div class="shelter-address">台中市北屯區崇德路三段835號</div>
+                        <div class="shelter-capacity">容納人數：約20000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">山區避難所</div>
+                        <div class="shelter-name">日月潭風景區</div>
+                        <div class="shelter-address">南投縣魚池鄉日月潭</div>
+                        <div class="shelter-capacity">容納人數：分散式避難</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">宗教場所</div>
+                        <div class="shelter-name">中台禪寺</div>
+                        <div class="shelter-address">南投縣埔里鎮一新里中台路2號</div>
+                        <div class="shelter-capacity">容納人數：約1000人</div>
+                    </div>
+                </div>
+
+                <div class="route-info">
+                    <div class="route-title">🛣️ 主要疏散路線</div>
+                    <ul class="route-list">
+                        <li><strong>往北路線：</strong>國道1號 → 台北</li>
+                        <li><strong>往南路線：</strong>國道3號 → 嘉義 → 高雄</li>
+                        <li><strong>往東路線：</strong>台14線 → 合歡山 → 花蓮</li>
+                        <li><strong>山區避難：</strong>台21線 → 日月潭 → 阿里山</li>
+                        <li><strong>西海岸：</strong>台61線 → 彰化 → 雲林</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 南部地區詳細資訊 -->
+            <div id="south" class="region-details">
+                <h2>🌴 南部地區避難指南</h2>
+                <div class="shelter-grid">
+                    <div class="shelter-item">
+                        <div class="shelter-type">政府避難所</div>
+                        <div class="shelter-name">高雄市政府四維行政中心</div>
+                        <div class="shelter-address">高雄市苓雅區四維三路2號</div>
+                        <div class="shelter-capacity">容納人數：約3000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">大型場館</div>
+                        <div class="shelter-name">高雄巨蛋</div>
+                        <div class="shelter-address">高雄市左營區博愛二路757號</div>
+                        <div class="shelter-capacity">容納人數：約15000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">山區避難所</div>
+                        <div class="shelter-name">阿里山森林遊樂區</div>
+                        <div class="shelter-address">嘉義縣阿里山鄉中正村59號</div>
+                        <div class="shelter-capacity">容納人數：分散式避難</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">港口設施</div>
+                        <div class="shelter-name">高雄港務大樓</div>
+                        <div class="shelter-address">高雄市鼓山區中山一路265號</div>
+                        <div class="shelter-capacity">容納人數：約1500人</div>
+                    </div>
+                </div>
+
+                <div class="route-info">
+                    <div class="route-title">🛣️ 主要疏散路線</div>
+                    <ul class="route-list">
+                        <li><strong>往北路線：</strong>國道1號 → 台中 → 台北</li>
+                        <li><strong>往東路線：</strong>台20線南橫公路 → 台東</li>
+                        <li><strong>山區避難：</strong>台18線阿里山公路 → 高山避難</li>
+                        <li><strong>海路撤離：</strong>高雄港 → 澎湖 → 其他國家</li>
+                        <li><strong>墾丁路線：</strong>台1線 → 屏東 → 墾丁</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 東部地區詳細資訊 -->
+            <div id="east" class="region-details">
+                <h2>⛰️ 東部地區避難指南</h2>
+                <div class="shelter-grid">
+                    <div class="shelter-item">
+                        <div class="shelter-type">政府避難所</div>
+                        <div class="shelter-name">花蓮縣政府大樓</div>
+                        <div class="shelter-address">花蓮市府前路17號</div>
+                        <div class="shelter-capacity">容納人數：約2000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">原住民部落</div>
+                        <div class="shelter-name">太魯閣族部落</div>
+                        <div class="shelter-address">花蓮縣秀林鄉</div>
+                        <div class="shelter-capacity">容納人數：分散式避難</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">天然避難所</div>
+                        <div class="shelter-name">太魯閣峽谷</div>
+                        <div class="shelter-address">花蓮縣秀林鄉</div>
+                        <div class="shelter-capacity">容納人數：天然洞穴</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">港口設施</div>
+                        <div class="shelter-name">花蓮港務大樓</div>
+                        <div class="shelter-address">花蓮市中山路1-2號</div>
+                        <div class="shelter-capacity">容納人數：約800人</div>
+                    </div>
+                </div>
+
+                <div class="route-info">
+                    <div class="route-title">🛣️ 主要疏散路線</div>
+                    <ul class="route-list">
+                        <li><strong>往西路線：</strong>台8線中橫公路 → 台中</li>
+                        <li><strong>南下路線：</strong>台9線 → 台東 → 屏東</li>
+                        <li><strong>北上路線：</strong>台9線 → 宜蘭 → 台北</li>
+                        <li><strong>山區避難：</strong>太魯閣國家公園山區</li>
+                        <li><strong>海路撤離：</strong>花蓮港 → 日本</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 離島地區詳細資訊 -->
+            <div id="islands" class="region-details">
+                <h2>🏝️ 離島地區避難指南</h2>
+                <div class="shelter-grid">
+                    <div class="shelter-item">
+                        <div class="shelter-type">軍事設施</div>
+                        <div class="shelter-name">金門防空洞</div>
+                        <div class="shelter-address">金門縣各鄉鎮</div>
+                        <div class="shelter-capacity">容納人數：約10000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">政府避難所</div>
+                        <div class="shelter-name">澎湖縣政府大樓</div>
+                        <div class="shelter-address">澎湖縣馬公市治平路32號</div>
+                        <div class="shelter-capacity">容納人數：約1000人</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">天然避難所</div>
+                        <div class="shelter-name">蘭嶼地下屋</div>
+                        <div class="shelter-address">台東縣蘭嶼鄉</div>
+                        <div class="shelter-capacity">容納人數：傳統建築</div>
+                    </div>
+                    <div class="shelter-item">
+                        <div class="shelter-type">港口設施</div>
+                        <div class="shelter-name">馬公港</div>
+                        <div class="shelter-address">澎湖縣馬公市</div>
+                        <div class="shelter-capacity">容納人數：港口建築群</div>
+                    </div>
+                </div>
+
+                <div class="route-info">
+                    <div class="route-title">🛣️ 主要疏散路線</div>
+                    <ul class="route-list">
+                        <li><strong>金門：</strong>尚義機場、水頭碼頭 → 台灣本島</li>
+                        <li><strong>澎湖：</strong>馬公機場、馬公港 → 台灣本島</li>
+                        <li><strong>馬祖：</strong>南竿機場、各島碼頭 → 台灣本島</li>
+                        <li><strong>蘭嶼：</strong>蘭嶼機場、開元港 → 台東</li>
+                        <li><strong>綠島：</strong>綠島機場、南寮港 → 台東</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="emergency-contacts">
+                <div class="emergency-title">📞 緊急聯絡電話</div>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <div class="contact-number">119</div>
+                        <div class="contact-label">消防救護</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-number">110</div>
+                        <div class="contact-label">警察報案</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-number">1991</div>
+                        <div class="contact-label">災害應變</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-number">118</div>
+                        <div class="contact-label">海巡署</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-number">165</div>
+                        <div class="contact-label">反詐騙</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-number">113</div>
+                        <div class="contact-label">婦幼保護</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="print-button" onclick="window.print()">🖨️ 列印此地圖</button>
+        </div>
+    </div>
+
+    <script>
+        function showRegion(regionId) {
+            // 隱藏所有區域詳細資訊
+            const allRegions = document.querySelectorAll('.region-details');
+            allRegions.forEach(region => {
+                region.classList.remove('active');
+            });
+
+            // 顯示選中的區域
+            const selectedRegion = document.getElementById(regionId);
+            if (selectedRegion) {
+                selectedRegion.classList.add('active');
+                selectedRegion.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 頁面載入時的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加鍵盤導航支援
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const allRegions = document.querySelectorAll('.region-details');
+                    allRegions.forEach(region => {
+                        region.classList.remove('active');
+                    });
+                }
+            });
+
+            // 添加觸控支援
+            let startY = 0;
+            document.addEventListener('touchstart', function(e) {
+                startY = e.touches[0].pageY;
+            });
+
+            document.addEventListener('touchend', function(e) {
+                let endY = e.changedTouches[0].pageY;
+                let diff = startY - endY;
+                
+                if (Math.abs(diff) > 50) {
+                    // 向上滑動顯示更多資訊
+                    if (diff > 0) {
+                        const firstCard = document.querySelector('.region-card');
+                        if (firstCard) {
+                            firstCard.click();
+                        }
+                    }
+                }
+            });
+        });
+
+        // 離線檢測
+        function checkOnlineStatus() {
+            if (!navigator.onLine) {
+                const offlineIndicator = document.createElement('div');
+                offlineIndicator.innerHTML = '📶 離線模式 - 所有功能正常運作';
+                offlineIndicator.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: #ffa726;
+                    color: white;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    z-index: 1000;
+                    font-size: 0.9em;
+                `;
+                document.body.appendChild(offlineIndicator);
+            }
+        }
+
+        window.addEventListener('load', checkOnlineStatus);
+        window.addEventListener('offline', checkOnlineStatus);
+    </script>
+</body>
+</html>

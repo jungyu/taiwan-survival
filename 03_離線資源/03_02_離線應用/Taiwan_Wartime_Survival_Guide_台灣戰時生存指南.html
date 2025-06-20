@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣戰時生存指南 - 離線版</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 15px 10px;
+            text-align: center;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+        
+        .nav-tab.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .content-panel {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .content-panel.active {
+            display: block;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin: 25px 0 15px 0;
+            font-size: 1.4em;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h4 {
+            color: #555;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .checklist {
+            background: #f8f9fa;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .checklist h4 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 5px 0;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .checklist-item label {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        
+        .checklist-item:hover {
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 3px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 5px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .warning h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-left: 5px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .danger h4 {
+            color: #721c24;
+            margin-bottom: 10px;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-left: 5px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .info h4 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #3498db;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: #3498db;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .resource-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .emergency-contacts {
+            background: #dc3545;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .emergency-contacts h3 {
+            border: none;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .contact-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .progress-indicator {
+            background: #e9ecef;
+            height: 6px;
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tab {
+                border-bottom: 1px solid #dee2e6;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .content-panel {
+                padding: 20px;
+            }
+        }
+        
+        .print-hide {
+            display: block;
+        }
+        
+        @media print {
+            .print-hide {
+                display: none;
+            }
+            
+            .content-panel {
+                display: block !important;
+                page-break-before: always;
+            }
+            
+            .content-panel:first-child {
+                page-break-before: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ 台灣戰時生存指南</h1>
+            <div class="subtitle">Taiwan Wartime Survival Guide - 離線完整版</div>
+        </header>
+
+        <div class="emergency-contacts print-hide">
+            <h3>🚨 緊急聯絡電話</h3>
+            <div class="contact-grid">
+                <div class="contact-item"><strong>救援電話:</strong> 119</div>
+                <div class="contact-item"><strong>警察報案:</strong> 110</div>
+                <div class="contact-item"><strong>災害應變:</strong> 1991</div>
+                <div class="contact-item"><strong>反詐騙:</strong> 165</div>
+            </div>
+        </div>
+
+        <nav class="nav-tabs print-hide">
+            <button class="nav-tab active" onclick="showPanel('preparation')">準備階段</button>
+            <button class="nav-tab" onclick="showPanel('survival')">生存要素</button>
+            <button class="nav-tab" onclick="showPanel('camp')">營地管理</button>
+            <button class="nav-tab" onclick="showPanel('medical')">醫療急救</button>
+            <button class="nav-tab" onclick="showPanel('resources')">資源管理</button>
+            <button class="nav-tab" onclick="showPanel('evacuation')">疏散撤離</button>
+        </nav>
+
+        <!-- 準備階段 -->
+        <div id="preparation" class="content-panel active">
+            <h2>🎯 戰前準備階段</h2>
+            
+            <h3>預警信號識別</h3>
+            <div class="warning">
+                <h4>⚠️ 高風險指標</h4>
+                <ul>
+                    <li>大規模軍事演習頻繁</li>
+                    <li>政治關係急劇惡化</li>
+                    <li>經濟制裁威脅</li>
+                    <li>媒體戰爭宣傳增加</li>
+                    <li>國際航班取消</li>
+                </ul>
+            </div>
+
+            <h3>72小時緊急準備</h3>
+            <div class="checklist">
+                <h4>立即行動清單</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="cash"> 
+                    <label for="cash">提領現金（多種面額，包含美金）</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="fuel"> 
+                    <label for="fuel">車輛加滿油，備用油桶</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="documents"> 
+                    <label for="documents">重要文件數位化備份</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="communications"> 
+                    <label for="communications">通訊設備充電測試</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="medicine"> 
+                    <label for="medicine">藥品補充（慢性病、急救）</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="food-water"> 
+                    <label for="food-water">食物與水儲備檢查</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="family-plan"> 
+                    <label for="family-plan">家庭應急計畫確認</label>
+                </div>
+            </div>
+
+            <h3>避難包準備 (Bug-Out Bag)</h3>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h4>🎒 基本裝備</h4>
+                    <ul>
+                        <li>3天份高熱量食物</li>
+                        <li>2公升飲用水</li>
+                        <li>淨水片/過濾器</li>
+                        <li>保暖衣物</li>
+                        <li>雨具</li>
+                        <li>手電筒</li>
+                        <li>電池/行動電源</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🏥 醫療用品</h4>
+                    <ul>
+                        <li>急救包</li>
+                        <li>個人藥物</li>
+                        <li>止痛藥</li>
+                        <li>抗生素</li>
+                        <li>繃帶膠帶</li>
+                        <li>消毒用品</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>📱 通訊工具</h4>
+                    <ul>
+                        <li>手機與充電器</li>
+                        <li>行動電源</li>
+                        <li>收音機</li>
+                        <li>哨子</li>
+                        <li>反光鏡</li>
+                        <li>紙筆</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>📄 重要文件</h4>
+                    <ul>
+                        <li>身分證件</li>
+                        <li>護照</li>
+                        <li>醫療記錄</li>
+                        <li>保險文件</li>
+                        <li>銀行資料</li>
+                        <li>家人照片</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生存要素 -->
+        <div id="survival" class="content-panel">
+            <h2>🏠 基本生存要素</h2>
+            
+            <h3>安全避難</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>第一階段：立即避難</h4>
+                    <p>聽到警報後，立即進入最近的地下空間或堅固建築物。避開窗戶和玻璃門。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>第二階段：評估環境</h4>
+                    <p>確認周圍安全後，檢查家人狀況。收集可攜帶的重要物資。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>第三階段：決策撤離</h4>
+                    <p>根據官方指示和實際情況，決定是否需要撤離到更安全的區域。</p>
+                </div>
+            </div>
+
+            <h3>基本需求管理</h3>
+            <div class="info">
+                <h4>💧 水資源管理</h4>
+                <ul>
+                    <li><strong>最低需求：</strong>每人每日2公升飲用水</li>
+                    <li><strong>建議儲備：</strong>每人7天份（14公升）</li>
+                    <li><strong>淨化方法：</strong>煮沸、淨水片、過濾器</li>
+                    <li><strong>替代來源：</strong>雨水收集、河水過濾</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h4>🍽️ 食物供應</h4>
+                <ul>
+                    <li><strong>熱量需求：</strong>成人每日2000-2500千卡</li>
+                    <li><strong>優先選擇：</strong>罐頭、乾糧、高能量棒</li>
+                    <li><strong>保存原則：</strong>陰涼乾燥、密封防潮</li>
+                    <li><strong>配給制度：</strong>計劃性分配，預留緊急用量</li>
+                </ul>
+            </div>
+
+            <h3>住所與保暖</h3>
+            <div class="checklist">
+                <h4>住所安全檢查</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="structure"> 
+                    <label for="structure">建築結構完整性</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="utilities"> 
+                    <label for="utilities">水電瓦斯系統</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="ventilation"> 
+                    <label for="ventilation">通風系統正常</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="exits"> 
+                    <label for="exits">緊急出入口暢通</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="protection"> 
+                    <label for="protection">窗戶防護措施</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 營地管理 -->
+        <div id="camp" class="content-panel">
+            <h2>🏕️ 臨時營地管理</h2>
+            
+            <h3>組織架構</h3>
+            <div class="info">
+                <h4>管理層級</h4>
+                <p><strong>營地指揮官：</strong>整體營運監督、外部協調</p>
+                <p><strong>部門主管：</strong>安全、後勤、醫療、教育、衛生</p>
+                <p><strong>社區代表：</strong>居民聯絡、意見反映</p>
+            </div>
+
+            <h3>基礎設施規劃</h3>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h4>🏘️ 居住區域</h4>
+                    <ul>
+                        <li>每人最少3.5平方公尺</li>
+                        <li>家庭單位群組安排</li>
+                        <li>防火通道設置</li>
+                        <li>隱私保護考量</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🚿 衛生設施</h4>
+                    <ul>
+                        <li>每20人一個廁所</li>
+                        <li>男女分開設置</li>
+                        <li>洗手清潔設施</li>
+                        <li>垃圾收集點</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🏥 公共服務</h4>
+                    <ul>
+                        <li>醫療救護站</li>
+                        <li>食物配給中心</li>
+                        <li>資訊公告區</li>
+                        <li>兒童活動空間</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🔧 後勤支援</h4>
+                    <ul>
+                        <li>物資儲存倉庫</li>
+                        <li>工具維修區</li>
+                        <li>發電機設備</li>
+                        <li>通訊指揮中心</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>日常管理制度</h3>
+            <div class="checklist">
+                <h4>每日例行工作</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="security-patrol"> 
+                    <label for="security-patrol">安全巡邏檢查</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="health-check"> 
+                    <label for="health-check">健康狀況監測</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="supply-distribution"> 
+                    <label for="supply-distribution">物資分配管理</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="waste-management"> 
+                    <label for="waste-management">廢物清理處理</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="communication"> 
+                    <label for="communication">對外通訊聯絡</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 醫療急救 -->
+        <div id="medical" class="content-panel">
+            <h2>🚑 醫療急救指南</h2>
+            
+            <h3>TCCC 戰術急救原則</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>第一階段：火線急救 (Care Under Fire)</h4>
+                    <ul>
+                        <li>立即控制危及生命的出血</li>
+                        <li>將傷患移至掩蔽處</li>
+                        <li>避免成為新的目標</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>第二階段：戰術野戰急救 (Tactical Field Care)</h4>
+                    <ul>
+                        <li>建立氣道暢通</li>
+                        <li>控制所有出血點</li>
+                        <li>預防休克</li>
+                        <li>準備後送</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>第三階段：戰術後送急救 (Tactical Evacuation Care)</h4>
+                    <ul>
+                        <li>持續監測生命徵象</li>
+                        <li>疼痛管理</li>
+                        <li>體溫維持</li>
+                        <li>醫療資訊記錄</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>常見創傷處理</h3>
+            <div class="danger">
+                <h4>🩸 出血控制</h4>
+                <ol>
+                    <li><strong>直接加壓：</strong>用乾淨布料直接壓迫傷口</li>
+                    <li><strong>壓迫點止血：</strong>壓迫動脈壓迫點</li>
+                    <li><strong>止血帶使用：</strong>嚴重肢體出血時使用</li>
+                    <li><strong>止血藥物：</strong>快速止血粉或紗布</li>
+                </ol>
+            </div>
+
+            <div class="warning">
+                <h4>🦴 骨折固定</h4>
+                <ul>
+                    <li>不要移動可能的脊椎傷患</li>
+                    <li>使用硬板或雜誌固定肢體</li>
+                    <li>固定骨折上下關節</li>
+                    <li>檢查血液循環</li>
+                </ul>
+            </div>
+
+            <h3>基本生命徵象</h3>
+            <div class="info">
+                <h4>正常值範圍</h4>
+                <ul>
+                    <li><strong>脈搏：</strong>60-100次/分鐘</li>
+                    <li><strong>呼吸：</strong>12-20次/分鐘</li>
+                    <li><strong>血壓：</strong>120/80 mmHg（參考值）</li>
+                    <li><strong>體溫：</strong>36.1-37.2°C</li>
+                </ul>
+            </div>
+
+            <h3>藥品管理</h3>
+            <div class="checklist">
+                <h4>基本藥品清單</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="pain-relief"> 
+                    <label for="pain-relief">止痛藥（阿斯匹靈、普拿疼）</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="antibiotics"> 
+                    <label for="antibiotics">抗生素（阿莫西林）</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="antiseptic"> 
+                    <label for="antiseptic">消毒劑（優碘、酒精）</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="bandages"> 
+                    <label for="bandages">繃帶膠帶</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="allergy-meds"> 
+                    <label for="allergy-meds">抗過敏藥物</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="diarrhea-meds"> 
+                    <label for="diarrhea-meds">止瀉藥物</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 資源管理 -->
+        <div id="resources" class="content-panel">
+            <h2>📦 資源管理系統</h2>
+            
+            <h3>物資分類與儲存</h3>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h4>🥫 A類：食物與水</h4>
+                    <ul>
+                        <li>溫控儲存環境</li>
+                        <li>防潮防鼠措施</li>
+                        <li>先進先出原則</li>
+                        <li>保存期限標示</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>💊 B類：醫療用品</h4>
+                    <ul>
+                        <li>專業醫療儲存</li>
+                        <li>溫度濕度控制</li>
+                        <li>藥品效期管理</li>
+                        <li>處方箋管控</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🛏️ C類：生活用品</h4>
+                    <ul>
+                        <li>一般倉儲環境</li>
+                        <li>分類整理擺放</li>
+                        <li>使用記錄管理</li>
+                        <li>定期清點盤算</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🔧 D類：工具設備</h4>
+                    <ul>
+                        <li>安全存放管理</li>
+                        <li>使用權限控制</li>
+                        <li>維護保養記錄</li>
+                        <li>備品零件儲存</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>配給制度</h3>
+            <div class="info">
+                <h4>公平分配原則</h4>
+                <ul>
+                    <li><strong>按人頭分配：</strong>基本生活需求</li>
+                    <li><strong>特殊需求：</strong>孕婦、兒童、老人、病患</li>
+                    <li><strong>透明作業：</strong>公開配發標準和程序</li>
+                    <li><strong>申訴機制：</strong>建立投訴處理流程</li>
+                </ul>
+            </div>
+
+            <h3>庫存管理</h3>
+            <div class="checklist">
+                <h4>庫存控制要點</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="daily-count"> 
+                    <label for="daily-count">每日關鍵物資盤點</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="safety-stock"> 
+                    <label for="safety-stock">安全庫存警戒線設定</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="expiry-check"> 
+                    <label for="expiry-check">過期物品定期檢查</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="fifo"> 
+                    <label for="fifo">先進先出輪替使用</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="inventory-record"> 
+                    <label for="inventory-record">進出庫記錄維護</label>
+                </div>
+            </div>
+
+            <h3>緊急採購與補給</h3>
+            <div class="warning">
+                <h4>⚠️ 補給來源優先序</h4>
+                <ol>
+                    <li><strong>政府配給：</strong>官方統一分配物資</li>
+                    <li><strong>國際援助：</strong>紅十字會、聯合國等組織</li>
+                    <li><strong>民間捐助：</strong>企業、宗教團體、個人捐贈</li>
+                    <li><strong>就地取材：</strong>當地資源合理運用</li>
+                    <li><strong>物資交換：</strong>與其他群體互相支援</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 疏散撤離 -->
+        <div id="evacuation" class="content-panel">
+            <h2>🚐 疏散撤離指南</h2>
+            
+            <h3>撤離決策時機</h3>
+            <div class="danger">
+                <h4>🔴 立即撤離指標</h4>
+                <ul>
+                    <li>空襲警報持續響起</li>
+                    <li>軍事設施遭受攻擊</li>
+                    <li>政府發布強制疏散令</li>
+                    <li>公共服務全面中斷</li>
+                    <li>鄰近地區已淪陷</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h4>🟡 考慮撤離指標</h4>
+                <ul>
+                    <li>戰鬥接近（50公里內）</li>
+                    <li>大量難民湧入</li>
+                    <li>物價急劇上漲</li>
+                    <li>通訊時斷時續</li>
+                    <li>治安明顯惡化</li>
+                </ul>
+            </div>
+
+            <h3>撤離路線規劃</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>主要路線</h4>
+                    <p>使用政府指定的官方疏散道路，跟隨交通指揮，避免自行選路。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>備用路線</h4>
+                    <p>預先規劃2-3條替代路線，包括次要道路和鄉間小路。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>步行路線</h4>
+                    <p>針對交通大阻塞情況，準備徒步撤離路線和休息點。</p>
+                </div>
+            </div>
+
+            <h3>交通工具選擇</h3>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h4>🚗 私人車輛</h4>
+                    <ul>
+                        <li>提前加滿油</li>
+                        <li>檢查輪胎狀況</li>
+                        <li>準備緊急修車工具</li>
+                        <li>車上常備飲水食物</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🚌 大眾運輸</h4>
+                    <ul>
+                        <li>關注官方疏散專車</li>
+                        <li>準備現金購票</li>
+                        <li>輕便行李打包</li>
+                        <li>身分證件隨身</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🚲 非機動車輛</h4>
+                    <ul>
+                        <li>自行車維修保養</li>
+                        <li>機車燃料充足</li>
+                        <li>攜帶備用零件</li>
+                        <li>安全帽護具</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h4>🥾 徒步撤離</h4>
+                    <ul>
+                        <li>舒適耐走鞋子</li>
+                        <li>輕量化裝備</li>
+                        <li>體力分配規劃</li>
+                        <li>休息點位安排</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>家庭撤離計畫</h3>
+            <div class="checklist">
+                <h4>撤離前檢查清單</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="family-contact"> 
+                    <label for="family-contact">確認所有家庭成員位置</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="meeting-point"> 
+                    <label for="meeting-point">指定家庭集合地點</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="essential-items"> 
+                    <label for="essential-items">攜帶必需品和重要文件</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="pets"> 
+                    <label for="pets">寵物安置或攜帶安排</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="house-secure"> 
+                    <label for="house-secure">住宅安全措施（關閉水電瓦斯）</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="contact-info"> 
+                    <label for="contact-info">留下聯絡資訊給鄰居</label>
+                </div>
+            </div>
+
+            <h3>特殊人群撤離</h3>
+            <div class="info">
+                <h4>👶 嬰幼兒撤離</h4>
+                <ul>
+                    <li>備足嬰兒用品（奶粉、尿布）</li>
+                    <li>保暖衣物多準備</li>
+                    <li>嬰兒車或背帶</li>
+                    <li>安撫用品（玩具、奶嘴）</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h4>👴 高齡者撤離</h4>
+                <ul>
+                    <li>慢性病藥物充足</li>
+                    <li>輪椅或助行器</li>
+                    <li>醫療記錄隨身</li>
+                    <li>專人陪同協助</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h4>♿ 身心障礙者撤離</h4>
+                <ul>
+                    <li>個人化輔具設備</li>
+                    <li>照護人員陪同</li>
+                    <li>特殊需求清單</li>
+                    <li>無障礙路線選擇</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <p style="color: #6c757d; margin-bottom: 10px;">
+                <strong>重要提醒：</strong>本指南僅供緊急情況參考，實際應對請依循政府官方指示。
+            </p>
+            <p style="color: #6c757d; font-size: 14px;">
+                製作日期：<span id="current-date"></span> | 
+                版本：v1.0 | 
+                離線可用
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 設定當前日期
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('zh-TW');
+
+        // 頁籤切換功能
+        function showPanel(panelId) {
+            // 隱藏所有內容面板
+            const panels = document.querySelectorAll('.content-panel');
+            panels.forEach(panel => panel.classList.remove('active'));
+            
+            // 移除所有標籤的 active 狀態
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 顯示選定的面板
+            document.getElementById(panelId).classList.add('active');
+            
+            // 設定對應標籤為 active
+            event.target.classList.add('active');
+        }
+
+        // 檢查清單進度計算
+        function updateProgress() {
+            const checklists = document.querySelectorAll('.checklist');
+            checklists.forEach(checklist => {
+                const checkboxes = checklist.querySelectorAll('input[type="checkbox"]');
+                const checked = checklist.querySelectorAll('input[type="checkbox"]:checked');
+                const progress = checkboxes.length > 0 ? (checked.length / checkboxes.length) * 100 : 0;
+                
+                let progressBar = checklist.querySelector('.progress-bar');
+                if (!progressBar) {
+                    const progressIndicator = document.createElement('div');
+                    progressIndicator.className = 'progress-indicator';
+                    progressBar = document.createElement('div');
+                    progressBar.className = 'progress-bar';
+                    progressIndicator.appendChild(progressBar);
+                    checklist.appendChild(progressIndicator);
+                }
+                
+                progressBar.style.width = progress + '%';
+            });
+        }
+
+        // 為所有檢查框添加事件監聽器
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+            updateProgress();
+        });
+
+        // 本地儲存檢查清單狀態
+        function saveChecklistState() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const state = {};
+            checkboxes.forEach(checkbox => {
+                state[checkbox.id] = checkbox.checked;
+            });
+            localStorage.setItem('taiwan-survival-checklist', JSON.stringify(state));
+        }
+
+        function loadChecklistState() {
+            const saved = localStorage.getItem('taiwan-survival-checklist');
+            if (saved) {
+                const state = JSON.parse(saved);
+                Object.keys(state).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = state[id];
+                    }
+                });
+                updateProgress();
+            }
+        }
+
+        // 添加自動保存功能
+        document.addEventListener('DOMContentLoaded', function() {
+            loadChecklistState();
+            
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateProgress();
+                    saveChecklistState();
+                });
+            });
+        });
+
+        // 列印功能
+        function printGuide() {
+            window.print();
+        }
+
+        // 鍵盤快捷鍵
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printGuide();
+            }
+        });
+    </script>
+</body>
+</html>

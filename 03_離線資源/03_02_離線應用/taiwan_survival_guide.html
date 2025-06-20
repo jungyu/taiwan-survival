@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣戰時生存指南 - 離線版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .nav-menu {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav-menu li {
+            background: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .nav-menu li:hover {
+            background: #2980b9;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .section h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .section h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .checklist {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .emergency-contact {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .warning {
+            background: #f39c12;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .tips {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .priority-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .priority-item {
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .priority-1 { background: #e74c3c; color: white; }
+        .priority-2 { background: #f39c12; color: white; }
+        .priority-3 { background: #f1c40f; color: #333; }
+        .priority-4 { background: #95a5a6; color: white; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background: #3498db;
+            color: white;
+        }
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1000;
+        }
+        .offline-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        @media print {
+            .nav-menu, .print-btn, .offline-indicator {
+                display: none;
+            }
+            .section {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-menu ul {
+                flex-direction: column;
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">📄 列印指南</button>
+    <div class="offline-indicator">🔄 離線可用</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🇹🇼 台灣戰時生存指南</h1>
+            <p>Taiwan Wartime Survival Guide - 離線版本</p>
+            <p>基於聯合國標準與實戰經驗編制</p>
+        </div>
+
+        <div class="nav-menu">
+            <ul>
+                <li onclick="showSection('overview')">📋 總覽</li>
+                <li onclick="showSection('threats')">⚠️ 威脅識別</li>
+                <li onclick="showSection('shelter')">🏠 避難所</li>
+                <li onclick="showSection('supplies')">📦 物資準備</li>
+                <li onclick="showSection('medical')">🏥 醫療急救</li>
+                <li onclick="showSection('camp')">🏕️ 營地管理</li>
+                <li onclick="showSection('emergency')">🚨 緊急聯絡</li>
+            </ul>
+        </div>
+
+        <!-- 總覽部分 -->
+        <div id="overview" class="section active">
+            <h2>📋 戰時生存總覽</h2>
+            
+            <div class="priority-box">
+                <div class="priority-item priority-1">
+                    <h3>第一優先</h3>
+                    <p>生命安全<br>立即威脅應對</p>
+                </div>
+                <div class="priority-item priority-2">
+                    <h3>第二優先</h3>
+                    <p>基本生存<br>水食住行</p>
+                </div>
+                <div class="priority-item priority-3">
+                    <h3>第三優先</h3>
+                    <p>醫療保健<br>通訊聯絡</p>
+                </div>
+                <div class="priority-item priority-4">
+                    <h3>第四優先</h3>
+                    <p>長期適應<br>社區重建</p>
+                </div>
+            </div>
+
+            <h3>🎯 核心原則</h3>
+            <div class="tips">
+                <strong>ABC 原則：</strong><br>
+                • <strong>A</strong>wareness (警覺) - 時刻保持警覺<br>
+                • <strong>B</strong>ehavior (行為) - 低調行事，避免衝突<br>
+                • <strong>C</strong>ommunication (通訊) - 保持聯繫，獲取資訊
+            </div>
+
+            <h3>⏰ 黃金時間</h3>
+            <ul>
+                <li><strong>72 小時</strong>：政府救援抵達前的自救期</li>
+                <li><strong>30 天</strong>：基本物資儲備目標</li>
+                <li><strong>90 天</strong>：長期避難準備期</li>
+            </ul>
+        </div>
+
+        <!-- 威脅識別部分 -->
+        <div id="threats" class="section">
+            <h2>⚠️ 威脅識別與應對</h2>
+
+            <h3>🚁 空襲警報識別</h3>
+            <div class="warning">
+                <strong>警報信號：</strong><br>
+                • 防空警報器（長音-短音-長音）<br>
+                • 手機緊急警報<br>
+                • 電視/廣播中斷播報<br>
+                • 社區哨兵通知
+            </div>
+
+            <h3>📱 空襲應對步驟</h3>
+            <div class="checklist">
+                <h4>聽到警報時：</h4>
+                <label><input type="checkbox"> 立即停止當前活動</label><br>
+                <label><input type="checkbox"> 快速前往最近掩護處</label><br>
+                <label><input type="checkbox"> 遠離窗戶和玻璃</label><br>
+                <label><input type="checkbox"> 採取保護姿勢（蹲下抱頭）</label><br>
+                <label><input type="checkbox"> 張開嘴巴（防鼓膜破裂）</label><br>
+                <label><input type="checkbox"> 等待全清信號</label>
+            </div>
+
+            <h3>👥 敵軍接觸應對</h3>
+            <div class="tips">
+                <strong>基本原則：</strong><br>
+                • 保持冷靜，避免恐慌<br>
+                • 表明平民身份<br>
+                • 遵從指令，避免反抗<br>
+                • 不透露他人位置資訊<br>
+                • 尋找安全脫身機會
+            </div>
+
+            <h3>🔍 威脅等級判斷</h3>
+            <table>
+                <tr><th>威脅等級</th><th>特徵</th><th>應對措施</th></tr>
+                <tr><td style="background:#e74c3c;color:white">🔴 極高</td><td>敵軍逼近、密集轟炸</td><td>立即撤離</td></tr>
+                <tr><td style="background:#f39c12;color:white">🟡 高</td><td>零星攻擊、巡邏增加</td><td>加強警戒</td></tr>
+                <tr><td style="background:#f1c40f">🟨 中</td><td>遠程炮火、無人機</td><td>避免外出</td></tr>
+                <tr><td style="background:#27ae60;color:white">🟢 低</td><td>平靜期間</td><td>補充物資</td></tr>
+            </table>
+        </div>
+
+        <!-- 避難所部分 -->
+        <div id="shelter" class="section">
+            <h2>🏠 避難所建立與管理</h2>
+
+            <h3>🏘️ 避難所類型選擇</h3>
+            
+            <h4>1. 地下室避難所</h4>
+            <div class="tips">
+                <strong>優點：</strong> 天然保護、溫度穩定、隱蔽性佳<br>
+                <strong>改造要點：</strong>
+            </div>
+            <div class="checklist">
+                <label><input type="checkbox"> 加固入口（沙袋、木板）</label><br>
+                <label><input type="checkbox"> 確保通風（避免窒息）</label><br>
+                <label><input type="checkbox"> 防潮措施（塑膠布、除濕）</label><br>
+                <label><input type="checkbox"> 儲備物資（水、食物、照明）</label><br>
+                <label><input type="checkbox"> 通訊設備（收音機、充電器）</label><br>
+                <label><input type="checkbox"> 衛生設施（簡易廁所）</label>
+            </div>
+
+            <h4>2. 家中安全室</h4>
+            <div class="warning">
+                <strong>選擇原則：</strong><br>
+                • 內部房間（遠離外牆）<br>
+                • 無窗戶或窗戶最少<br>
+                • 靠近水源和廁所<br>
+                • 結構堅固
+            </div>
+
+            <h4>3. 山區避難營地</h4>
+            <h5>營地選址標準：</h5>
+            <ul>
+                <li><strong>地形：</strong>半山腰，背風面</li>
+                <li><strong>植被：</strong>茂密森林掩護</li>
+                <li><strong>水源：</strong>靠近但不過近</li>
+                <li><strong>安全：</strong>多重撤離路線</li>
+            </ul>
+
+            <h5>營地隱蔽措施：</h5>
+            <div class="checklist">
+                <label><input type="checkbox"> 用樹枝泥土覆蓋明顯物品</label><br>
+                <label><input type="checkbox"> 控制聲音（避免大聲交談）</label><br>
+                <label><input type="checkbox"> 管制光線（使用紅光手電筒）</label><br>
+                <label><input type="checkbox"> 煙霧控制（無風時生火）</label><br>
+                <label><input type="checkbox"> 設置警戒系統</label>
+            </div>
+        </div>
+
+        <!-- 物資準備部分 -->
+        <div id="supplies" class="section">
+            <h2>📦 戰時物資儲備指南</h2>
+
+            <h3>💧 水資源（第一優先）</h3>
+            <div class="emergency-contact">
+                每人每天至少 3 升水 × 30天 = 90升/人
+            </div>
+            
+            <div class="checklist">
+                <h4>水資源儲備清單：</h4>
+                <label><input type="checkbox"> 食品級水桶/水箱</label><br>
+                <label><input type="checkbox"> 淨水片/濾水器</label><br>
+                <label><input type="checkbox"> 雨水收集系統</label><br>
+                <label><input type="checkbox"> 備用水源地圖</label>
+            </div>
+
+            <h3>🍚 食物供應</h3>
+            <h4>30天緊急食物清單：</h4>
+            <table>
+                <tr><th>類別</th><th>物品</th><th>數量</th><th>備註</th></tr>
+                <tr><td>穀物</td><td>白米</td><td>10公斤</td><td>主食</td></tr>
+                <tr><td>蛋白質</td><td>罐頭肉類</td><td>20罐</td><td>長期保存</td></tr>
+                <tr><td>蔬果</td><td>罐頭蔬菜</td><td>15罐</td><td>維生素補充</td></tr>
+                <tr><td>調味</td><td>鹽/糖/油</td><td>各2公斤</td><td>基本調味</td></tr>
+            </table>
+
+            <h3>🔧 工具與設備</h3>
+            <div class="checklist">
+                <h4>基本工具清單：</h4>
+                <label><input type="checkbox"> LED手電筒（防水）</label><br>
+                <label><input type="checkbox"> 電池收音機</label><br>
+                <label><input type="checkbox"> 多功能工具</label><br>
+                <label><input type="checkbox"> 強力膠帶</label><br>
+                <label><input type="checkbox"> 塑膠布和繩索</label><br>
+                <label><input type="checkbox"> 行動電源</label>
+            </div>
+
+            <h3>📍 分散儲存策略</h3>
+            <div class="tips">
+                <strong>三層儲存系統：</strong><br>
+                • <strong>第1層：</strong>日常區域（3-7天份）<br>
+                • <strong>第2層：</strong>緊急區域（30天份）<br>
+                • <strong>第3層：</strong>長期區域（90天份）
+            </div>
+        </div>
+
+        <!-- 醫療急救部分 -->
+        <div id="medical" class="section">
+            <h2>🏥 醫療急救與TCCC</h2>
+
+            <h3>🚑 MARCH評估流程</h3>
+            <div class="priority-box">
+                <div class="priority-item priority-1">
+                    <strong>M</strong><br>Massive Hemorrhage<br>大出血控制
+                </div>
+                <div class="priority-item priority-2">
+                    <strong>A</strong><br>Airway<br>氣道管理
+                </div>
+                <div class="priority-item priority-3">
+                    <strong>R</strong><br>Respiration<br>呼吸評估
+                </div>
+                <div class="priority-item priority-4">
+                    <strong>C</strong><br>Circulation<br>循環評估
+                </div>
+            </div>
+            <div class="priority-box">
+                <div class="priority-item priority-1">
+                    <strong>H</strong><br>Hypothermia<br>失溫預防
+                </div>
+            </div>
+
+            <h3>🩸 止血技術</h3>
+            <h4>止血帶應用：</h4>
+            <div class="checklist">
+                <label><input type="checkbox"> 1. 位置：出血點上方2-3英寸</label><br>
+                <label><input type="checkbox"> 2. 拉緊固定帶</label><br>
+                <label><input type="checkbox"> 3. 轉動絞盤直到出血停止</label><br>
+                <label><input type="checkbox"> 4. 固定絞盤，記錄時間</label>
+            </div>
+
+            <h4>基本急救包：</h4>
+            <table>
+                <tr><th>物品</th><th>數量</th><th>用途</th></tr>
+                <tr><td>無菌紗布墊</td><td>10片</td><td>傷口包紮</td></tr>
+                <tr><td>彈性繃帶</td><td>6卷</td><td>固定包紮</td></tr>
+                <tr><td>止血帶</td><td>2條</td><td>大出血控制</td></tr>
+                <tr><td>止痛藥</td><td>30天份</td><td>疼痛管理</td></tr>
+                <tr><td>消毒藥水</td><td>2瓶</td><td>傷口清潔</td></tr>
+            </table>
+
+            <h3>💊 藥品管理</h3>
+            <div class="warning">
+                <strong>藥品儲備原則：</strong><br>
+                • 慢性病藥物儲備90天<br>
+                • 常用藥物儲備30天<br>
+                • 定期檢查有效期限<br>
+                • 先進先出使用
+            </div>
+
+            <h3>🌡️ 疾病預防</h3>
+            <div class="checklist">
+                <h4>衛生防護措施：</h4>
+                <label><input type="checkbox"> 勤洗手或使用酒精</label><br>
+                <label><input type="checkbox"> 飲用水務必煮沸</label><br>
+                <label><input type="checkbox"> 食物充分加熱</label><br>
+                <label><input type="checkbox"> 垃圾妥善處理</label><br>
+                <label><input type="checkbox"> 保持居住環境清潔</label>
+            </div>
+        </div>
+
+        <!-- 營地管理部分 -->
+        <div id="camp" class="section">
+            <h2>🏕️ 營地管理（聯合國標準）</h2>
+
+            <h3>👥 組織架構</h3>
+            <h4>管理委員會組成：</h4>
+            <ul>
+                <li><strong>營地主管：</strong>整體協調</li>
+                <li><strong>後勤專員：</strong>物資管理</li>
+                <li><strong>醫療人員：</strong>健康照護</li>
+                <li><strong>安全人員：</strong>維護秩序</li>
+                <li><strong>社區代表：</strong>每50-100人1名</li>
+            </ul>
+
+            <h3>📏 聯合國最低標準</h3>
+            <table>
+                <tr><th>項目</th><th>標準</th><th>緊急最低</th></tr>
+                <tr><td>水源供應</td><td>20升/人/天</td><td>7.5升/人/天</td></tr>
+                <tr><td>食物熱量</td><td>2100千卡/人/天</td><td>1800千卡/人/天</td></tr>
+                <tr><td>住所空間</td><td>7m²/人</td><td>4m²/人</td></tr>
+                <tr><td>取水距離</td><td>250公尺內</td><td>500公尺內</td></tr>
+                <tr><td>廁所比例</td><td>1:50人</td><td>1:100人</td></tr>
+            </table>
+
+            <h3>🛡️ 安全與保護</h3>
+            <div class="warning">
+                <strong>弱勢群體保護：</strong><br>
+                • 婦女兒童優先保護<br>
+                • 老人殘疾者特殊照顧<br>
+                • 夜間安全巡邏<br>
+                • 專用設施設置
+            </div>
+
+            <h3>⚖️ 資源分配</h3>
+            <div class="checklist">
+                <h4>分配原則：</h4>
+                <label><input type="checkbox"> 按需分配（年齡、健康狀況）</label><br>
+                <label><input type="checkbox"> 透明公開（公告分配清單）</label><br>
+                <label><input type="checkbox"> 防腐敗（雙重確認制）</label><br>
+                <label><input type="checkbox"> 申訴機制（意見箱、調解）</label>
+            </div>
+
+            <h3>📊 每日管理檢核</h3>
+            <div class="checklist">
+                <label><input type="checkbox"> 水質檢測完成</label><br>
+                <label><input type="checkbox"> 食物分發無誤</label><br>
+                <label><input type="checkbox"> 衛生清潔到位</label><br>
+                <label><input type="checkbox"> 安全巡邏正常</label><br>
+                <label><input type="checkbox"> 垃圾處理完成</label><br>
+                <label><input type="checkbox"> 醫療站運作</label><br>
+                <label><input type="checkbox"> 物資庫存盤點</label>
+            </div>
+        </div>
+
+        <!-- 緊急聯絡部分 -->
+        <div id="emergency" class="section">
+            <h2>🚨 緊急聯絡與求救</h2>
+
+            <div class="emergency-contact">
+                🚨 台灣緊急電話 🚨<br>
+                119 消防救護 | 110 警察 | 118 海巡<br>
+                1999 市民專線 | 165 反詐騙
+            </div>
+
+            <h3>📻 通訊設備</h3>
+            <div class="checklist">
+                <h4>必備通訊工具：</h4>
+                <label><input type="checkbox"> 電池收音機（AM/FM/短波）</label><br>
+                <label><input type="checkbox"> 對講機（5-10公里範圍）</label><br>
+                <label><input type="checkbox"> 行動電源（大容量）</label><br>
+                <label><input type="checkbox"> 太陽能充電板</label><br>
+                <label><input type="checkbox"> 緊急衛星通訊器</label><br>
+                <label><input type="checkbox"> 備用電池（各種規格）</label>
+            </div>
+
+            <h3>🔊 求救信號</h3>
+            <h4>可見信號：</h4>
+            <ul>
+                <li>反光鏡對準救援隊</li>
+                <li>空曠處鋪設明顯標誌</li>
+                <li>煙霧信號（白天）</li>
+                <li>燈光信號（夜間）</li>
+            </ul>
+
+            <h4>聲音信號：</h4>
+            <ul>
+                <li>口哨聲（三長兩短）</li>
+                <li>敲擊金屬物品</li>
+                <li>大聲呼救</li>
+            </ul>
+
+            <h3>📱 重要App下載</h3>
+            <div class="tips">
+                <strong>建議下載：</strong><br>
+                • 災害示警App<br>
+                • 1922防疫APP<br>
+                • 警政服務App<br>
+                • 急救指南App<br>
+                • 離線地圖App
+            </div>
+
+            <h3>🗺️ 重要位置記錄</h3>
+            <table>
+                <tr><th>類型</th><th>位置</th><th>電話</th><th>備註</th></tr>
+                <tr><td>最近醫院</td><td>_____________</td><td>_____________</td><td>___________</td></tr>
+                <tr><td>消防分隊</td><td>_____________</td><td>_____________</td><td>___________</td></tr>
+                <tr><td>警察分局</td><td>_____________</td><td>_____________</td><td>___________</td></tr>
+                <tr><td>避難收容所</td><td>_____________</td><td>_____________</td><td>___________</td></tr>
+                <tr><td>親友聯絡</td><td>_____________</td><td>_____________</td><td>___________</td></tr>
+            </table>
+
+            <div class="warning">
+                <strong>⚠️ 重要提醒</strong><br>
+                • 定期更新聯絡資訊<br>
+                • 多備份到不同設備<br>
+                • 與家人確認集合點<br>
+                • 準備現金以備不時之需
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // 隱藏所有section
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 顯示指定section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 更新導航樣式
+            const navItems = document.querySelectorAll('.nav-menu li');
+            navItems.forEach(item => {
+                item.style.background = '#3498db';
+            });
+            event.target.style.background = '#2c3e50';
+        }
+
+        // 檢核表功能
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                localStorage.setItem(e.target.parentElement.textContent, e.target.checked);
+            }
+        });
+
+        // 載入儲存的檢核狀態
+        window.addEventListener('load', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const saved = localStorage.getItem(checkbox.parentElement.textContent);
+                if (saved === 'true') {
+                    checkbox.checked = true;
+                }
+            });
+            
+            console.log('台灣戰時生存指南已載入 - 可離線使用');
+        });
+
+        // Service Worker 註冊（離線功能）
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>
