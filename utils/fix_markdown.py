@@ -105,7 +105,7 @@ def fix_markdown_format(content):
 def main():
     """主函數"""
     if len(sys.argv) != 2:
-        print("用法: python3 fix_markdown.py <markdown文件路徑>")
+        print("用法: python utils/fix_markdown.py <markdown文件路徑>")
         sys.exit(1)
     
     file_path = sys.argv[1]
