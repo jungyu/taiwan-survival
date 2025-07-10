@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ 戰時離線通訊網</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #1a1a1a; color: #fff; }
+        .header { background: #2c1810; padding: 15px; text-align: center; border-bottom: 2px solid #8b4513; }
+        .nav { background: #3a2317; padding: 10px; display: flex; justify-content: center; gap: 20px; }
+        .nav-btn { background: #654321; color: #fff; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
+        .nav-btn.active { background: #8b4513; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: #2a2a2a; border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #8b4513; }
+        .status { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .online { background: #28a745; }
+        .offline { background: #dc3545; }
+        .urgent { background: #ff6b6b; color: #fff; border-color: #ff6b6b; }
+        .medical { background: #17a2b8; color: #fff; border-color: #17a2b8; }
+        .food { background: #ffc107; color: #000; border-color: #ffc107; }
+        .shelter { background: #6f42c1; color: #fff; border-color: #6f42c1; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #333; color: #fff; }
+        .btn { background: #8b4513; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        .btn:hover { background: #654321; }
+        .btn-urgent { background: #dc3545; }
+        .btn-urgent:hover { background: #c82333; }
+        .message { padding: 10px; margin: 10px 0; border-radius: 4px; background: #333; }
+        .message-urgent { border-left: 4px solid #dc3545; }
+        .message-info { border-left: 4px solid #17a2b8; }
+        .resource-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #444; }
+        .resource-item:last-child { border-bottom: none; }
+        .location { font-size: 0.9em; color: #ccc; }
+        .distance { font-size: 0.8em; color: #999; }
+        .hidden { display: none; }
+        .emergency-alert { background: #ff0000; color: #fff; padding: 15px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; text-align: center; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ 戰時離線通訊網</h1>
+        <p>LoRa Mesh 緊急通訊平台 - 物資交換 & 安全通訊</p>
+    </div>
+    
+    <div class="nav">
+        <button class="nav-btn active" onclick="showSection('dashboard')">狀態總覽</button>
+        <button class="nav-btn" onclick="showSection('resources')">物資交換</button>
+        <button class="nav-btn" onclick="showSection('emergency')">緊急求助</button>
+        <button class="nav-btn" onclick="showSection('messages')">安全通訊</button>
+        <button class="nav-btn" onclick="showSection('map')">網路地圖</button>
+    </div>
+    
+    <div class="container">
+        <!-- 狀態總覽 -->
+        <div id="dashboard" class="section">
+            <div class="status">
+                <div class="status-dot online"></div>
+                <span>LoRa 網路連線正常 | 節點ID: !a1b2c3d4 | 最後更新: 14:32</span>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>🔗 網路狀態</h3>
+                    <p><strong>在線節點:</strong> 23 個</p>
+                    <p><strong>覆蓋範圍:</strong> 約 15km 半徑</p>
+                    <p><strong>跳躍數:</strong> 最多 4 跳</p>
+                    <p><strong>電池剩餘:</strong> 78%</p>
+                </div>
+                
+                <div class="card">
+                    <h3>📦 物資概況</h3>
+                    <p><strong>可用物資:</strong> 47 項</p>
+                    <p><strong>緊急需求:</strong> 8 項</p>
+                    <p><strong>醫療用品:</strong> 12 項</p>
+                    <p><strong>食物水源:</strong> 18 項</p>
+                </div>
+                
+                <div class="card">
+                    <h3>🚨 緊急狀況</h3>
+                    <p><strong>活躍求助:</strong> 3 個</p>
+                    <p><strong>醫療緊急:</strong> 1 個</p>
+                    <p><strong>避難需求:</strong> 2 個</p>
+                    <p><strong>最近更新:</strong> 5 分鐘前</p>
+                </div>
+                
+                <div class="card">
+                    <h3>📡 通訊統計</h3>
+                    <p><strong>今日訊息:</strong> 156 則</p>
+                    <p><strong>成功送達:</strong> 89%</p>
+                    <p><strong>平均延遲:</strong> 12 秒</p>
+                    <p><strong>網路負載:</strong> 中等</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 物資交換 -->
+        <div id="resources" class="section hidden">
+            <div class="grid">
+                <div class="card">
+                    <h3>🎯 發布物資需求</h3>
+                    <div class="form-group">
+                        <label>物資類型</label>
+                        <select id="resourceType">
+                            <option value="food">食物/飲水</option>
+                            <option value="medical">醫療用品</option>
+                            <option value="shelter">避難用品</option>
+                            <option value="clothing">衣物</option>
+                            <option value="tools">工具</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>物資描述</label>
+                        <input type="text" id="resourceDesc" placeholder="例: 急需嬰兒奶粉 2罐">
+                    </div>
+                    <div class="form-group">
+                        <label>緊急程度</label>
+                        <select id="urgency">
+                            <option value="high">緊急 (24小時內)</option>
+                            <option value="medium">重要 (3天內)</option>
+                            <option value="low">一般</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>可交換物資</label>
+                        <input type="text" id="exchange" placeholder="可提供的物資或服務">
+                    </div>
+                    <button class="btn" onclick="publishResource()">發布需求</button>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 物資需求列表</h3>
+                    <div id="resourceList">
+                        <div class="resource-item urgent">
+                            <div>
+                                <strong>🏥 醫療用品 - 胰島素</strong>
+                                <div class="location">📍 市中心避難所</div>
+                                <div class="distance">距離: 2.3km | 2跳</div>
+                            </div>
+                            <div>
+                                <button class="btn btn-urgent">聯絡</button>
+                            </div>
+                        </div>
+                        <div class="resource-item food">
+                            <div>
+                                <strong>🍼 嬰兒奶粉</strong>
+                                <div class="location">📍 東區社區</div>
+                                <div class="distance">距離: 1.8km | 1跳</div>
+                            </div>
+                            <div>
+                                <button class="btn">聯絡</button>
+                            </div>
+                        </div>
+                        <div class="resource-item shelter">
+                            <div>
+                                <strong>🏠 臨時住所</strong>
+                                <div class="location">📍 西區教會</div>
+                                <div class="distance">距離: 3.1km | 3跳</div>
+                            </div>
+                            <div>
+                                <button class="btn">聯絡</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 緊急求助 -->
+        <div id="emergency" class="section hidden">
+            <div class="emergency-alert">
+                ⚠️ 緊急求助將廣播到所有節點 - 請謹慎使用
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>🚨 發送緊急求助</h3>
+                    <div class="form-group">
+                        <label>緊急類型</label>
+                        <select id="emergencyType">
+                            <option value="medical">醫療急救</option>
+                            <option value="trapped">受困需要救援</option>
+                            <option value="fire">火災</option>
+                            <option value="violence">暴力威脅</option>
+                            <option value="missing">失蹤人員</option>
+                            <option value="other">其他緊急情況</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>詳細描述</label>
+                        <textarea id="emergencyDesc" rows="3" placeholder="請詳細描述情況、位置、需要的協助"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>聯絡方式</label>
+                        <input type="text" id="contact" placeholder="如何聯絡您 (頻道、呼號等)">
+                    </div>
+                    <button class="btn btn-urgent" onclick="sendEmergency()">🚨 發送緊急求助</button>
+                </div>
+                
+                <div class="card">
+                    <h3>📢 緊急求助列表</h3>
+                    <div id="emergencyList">
+                        <div class="message message-urgent">
+                            <strong>🏥 醫療急救</strong><br>
+                            <span class="location">📍 !b2c3d4e5 | 距離: 1.2km</span><br>
+                            老人心臟病發作，需要急救藥物<br>
+                            <small>發送時間: 14:28 | 聯絡: 頻道3</small>
+                        </div>
+                        <div class="message message-urgent">
+                            <strong>🔥 火災</strong><br>
+                            <span class="location">📍 !c3d4e5f6 | 距離: 2.8km</span><br>
+                            建築物火災，需要滅火設備<br>
+                            <small>發送時間: 14:15 | 聯絡: 頻道1</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 安全通訊 -->
+        <div id="messages" class="section hidden">
+            <div class="grid">
+                <div class="card">
+                    <h3>💬 發送訊息</h3>
+                    <div class="form-group">
+                        <label>收件人</label>
+                        <select id="recipient">
+                            <option value="broadcast">廣播到所有節點</option>
+                            <option value="!a1b2c3d4">!a1b2c3d4 (醫療站)</option>
+                            <option value="!b2c3d4e5">!b2c3d4e5 (物資中心)</option>
+                            <option value="!c3d4e5f6">!c3d4e5f6 (避難所)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>訊息內容</label>
+                        <textarea id="messageContent" rows="4" placeholder="請輸入訊息內容 (建議200字以內)"></textarea>
+                    </div>
+                    <button class="btn" onclick="sendMessage()">發送訊息</button>
+                </div>
+                
+                <div class="card">
+                    <h3>📨 收件箱</h3>
+                    <div id="inbox">
+                        <div class="message message-info">
+                            <strong>來自: !b2c3d4e5</strong><br>
+                            今日物資配送時間改為16:00<br>
+                            <small>收到時間: 14:30</small>
+                        </div>
+                        <div class="message">
+                            <strong>來自: !c3d4e5f6</strong><br>
+                            避難所還有空位，歡迎需要的人前來<br>
+                            <small>收到時間: 14:22</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 網路地圖 -->
+        <div id="map" class="section hidden">
+            <div class="card">
+                <h3>🗺️ LoRa 網路拓撲圖</h3>
+                <div style="background: #333; height: 400px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; color: #999;">
+                        <p>📡 網路地圖 (簡化版)</p>
+                        <p>中心節點: !a1b2c3d4 (你)</p>
+                        <p>↗️ !b2c3d4e5 (1.2km, 醫療站)</p>
+                        <p>↘️ !c3d4e5f6 (2.8km, 物資中心)</p>
+                        <p>↙️ !d4e5f6g7 (1.5km, 避難所)</p>
+                        <p>↖️ !e5f6g7h8 (3.2km, 通訊中繼)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📊 節點詳細資訊</h3>
+                <div class="resource-item">
+                    <div>
+                        <strong>!a1b2c3d4 (您的節點)</strong>
+                        <div class="location">📍 中心位置 | 電池: 78%</div>
+                    </div>
+                    <div>在線</div>
+                </div>
+                <div class="resource-item">
+                    <div>
+                        <strong>!b2c3d4e5 (醫療站)</strong>
+                        <div class="location">📍 1.2km | 電池: 92%</div>
+                    </div>
+                    <div>在線</div>
+                </div>
+                <div class="resource-item">
+                    <div>
+                        <strong>!c3d4e5f6 (物資中心)</strong>
+                        <div class="location">📍 2.8km | 電池: 65%</div>
+                    </div>
+                    <div>在線</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showSection(sectionId) {
+            // 隱藏所有區段
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // 顯示選中區段
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // 更新導航按鈕
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function publishResource() {
+            const type = document.getElementById('resourceType').value;
+            const desc = document.getElementById('resourceDesc').value;
+            const urgency = document.getElementById('urgency').value;
+            const exchange = document.getElementById('exchange').value;
+            
+            if (!desc) {
+                alert('請填寫物資描述');
+                return;
+            }
+            
+            // 模擬 API 呼叫
+            const resourceData = {
+                type: type,
+                description: desc,
+                urgency: urgency,
+                exchange: exchange,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('發布物資需求:', resourceData);
+            alert('物資需求已發布到網路');
+            
+            // 清空表單
+            document.getElementById('resourceDesc').value = '';
+            document.getElementById('exchange').value = '';
+        }
+        
+        function sendEmergency() {
+            const type = document.getElementById('emergencyType').value;
+            const desc = document.getElementById('emergencyDesc').value;
+            const contact = document.getElementById('contact').value;
+            
+            if (!desc) {
+                alert('請填寫緊急情況描述');
+                return;
+            }
+            
+            if (confirm('確定要發送緊急求助嗎？這將廣播到所有節點！')) {
+                const emergencyData = {
+                    type: type,
+                    description: desc,
+                    contact: contact,
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log('發送緊急求助:', emergencyData);
+                alert('緊急求助已發送到所有節點');
+                
+                // 清空表單
+                document.getElementById('emergencyDesc').value = '';
+                document.getElementById('contact').value = '';
+            }
+        }
+        
+        function sendMessage() {
+            const recipient = document.getElementById('recipient').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content) {
+                alert('請輸入訊息內容');
+                return;
+            }
+            
+            const messageData = {
+                to: recipient,
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('發送訊息:', messageData);
+            alert('訊息已發送');
+            
+            // 清空表單
+            document.getElementById('messageContent').value = '';
+        }
+        
+        // 模擬定期更新
+        setInterval(() => {
+            // 更新節點狀態、新訊息等
+            console.log('更新網路狀態...');
+        }, 30000);
+    </script>
+</body>
+</html>
